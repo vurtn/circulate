@@ -16,9 +16,13 @@
     <%= tag.div category.slug, class: "responsive-table-cell" %>
 
     <%= tag.div class: "responsive-table-cell" do %>
-      <%= link_to 'Show', category %>
-      <%= link_to 'Edit', edit_category_path(category) %>
-      <%= link_to 'Destroy', category, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <div class="btn-group btn-group-block">
+        <%= link_to 'Show', category, class: "btn btn-link" %>
+        <%= link_to 'Edit', edit_category_path(category), class: "btn btn-link" %>
+        <%= dropdown_menu do |menu| %>
+          <%= menu.link_to 'Destroy', category, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn" %>
+        <% end %>
+      </div> 
     <% end %>
   <% end %>
 </div>

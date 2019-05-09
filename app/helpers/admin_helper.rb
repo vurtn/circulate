@@ -12,4 +12,31 @@ module AdminHelper
     end
   end
 
+  class DropdownMenu < BasicObject
+    def initialize(template)
+      @template = template
+    end
+
+    def method_missing(*args, &block)
+      @template.send *args, &block
+    end
+
+    def render(&block)
+      tag.div class: "dropdown dropdown-right" do
+        concat(link_to("#", data: { turbolinks: false }, class: "btn btn-link dropdown-toggle", tabindex:"0") do
+          tag.i class: "icon icon-more-horiz"
+        end)
+        concat(tag.ul(class: "menu") do
+           block.call(self)
+        end)
+      end
+    end
+  end
+
+  def dropdown_menu(&block)
+    DropdownMenu.new(self).render do |menu|
+      yield menu
+    end
+  end
+
 end

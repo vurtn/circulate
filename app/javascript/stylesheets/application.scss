@@ -48,7 +48,7 @@ header.navbar {
     box-sizing: border-box;
     flex-grow: 1;
     width: 100%;  // Default to full width
-    overflow: hidden; // Or flex might break
+    // overflow: hidden; // Or flex might break
     list-style: none;
     border-bottom: .05rem solid #dadee4;
     padding: .6rem .4rem;
