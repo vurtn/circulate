@@ -42,6 +42,11 @@ module ItemsHelper
     image.variant(options)
   end
 
+  def cached_variant_url_for(variant)
+    key = "active_storage/urls/#{variant.key}"
+    Rails.cache.read(key) || url_for(variant)
+  end
+
   def full_item_number(item)
     "#{item.borrow_policy.code}-#{item.number}"
   end
