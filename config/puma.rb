@@ -44,3 +44,8 @@ on_worker_boot do
   # Valid on Rails 4.1+ using the `config/database.yml` method of setting `pool` size
   ActiveRecord::Base.establish_connection
 end
+
+if ENV.fetch('RAILS_ENV') == 'development'
+  Rails.logger.info "Setting puma worker_timeout to 3600 in development"
+  worker_timeout 3600
+end

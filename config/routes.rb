@@ -71,5 +71,7 @@ Rails.application.routes.draw do
   resources :items, only: [:index, :show]
   get "search", to: "searches#show"
 
+  get "/images/:signed_blob_id/:variation_key/*filename(.:format)", to: "images#show", as: :image
+
   root to: "home#index"
 end

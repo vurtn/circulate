@@ -42,6 +42,20 @@ module ItemsHelper
     image.variant(options)
   end
 
+  def cacheable_image_url(image, options = {})
+    variant = rotated_variant(image, options)
+    options = {}
+    if controller.config.asset_host
+      options[:host] = controller.config.asset_host
+      options[:port] = nil
+    end
+    image_url(
+      variant.blob.signed_id,
+      variant.variation.key,
+      variant.blob.filename,
+      options)
+  end
+
   def full_item_number(item)
     item.complete_number
   end
