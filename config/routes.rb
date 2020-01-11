@@ -69,6 +69,7 @@ Rails.application.routes.draw do
       delete "/dev/time", to: "dev#clear_time"
     end
 
+    resource :maps, only: :show
     get "/", to: redirect("/admin/items")
   end
 
