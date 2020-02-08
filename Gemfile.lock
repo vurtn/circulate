@@ -359,6 +359,10 @@ GEM
     turbolinks_render (0.9.17)
       rails (>= 5.2.0)
       turbolinks-source (~> 5.1)
+    twilio-ruby (5.31.1)
+      faraday (~> 0.9)
+      jwt (>= 1.5, <= 2.5)
+      nokogiri (>= 1.6, < 2.0)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -426,6 +430,7 @@ DEPENDENCIES
   sucker_punch
   turbolinks (~> 5)
   turbolinks_render
+  twilio-ruby
   web-console (>= 3.3.0)
   webpacker (>= 4.0.0.rc.3)
 
@@ -433,4 +438,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.0.2
+   2.1.4
