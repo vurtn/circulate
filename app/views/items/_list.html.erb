@@ -1,0 +1,90 @@
+<div class="columns items-summary">
+  <div class="column col-md-12 col-7">
+    Viewing
+    <strong><%= pluralize @pagy.count, "item" %></strong>
+    <% if @tag %>
+      tagged with
+      <span class="chip">
+        <strong><%= @tag.name %></strong>
+        <%= link_to "", inventory_path(tag: nil), :class => "btn btn-clear", "aria-label" => "Clear filter", :role => "button", title: "Clear filter" %>
+      </span>
+    <% elsif @query %>
+      matching
+      <span class="chip">
+        <strong><%= @query %></strong>
+        <%= link_to "", inventory_path(query: nil), :class => "btn btn-clear", "aria-label" => "Clear filter", :role => "button", title: "Clear filter" %>
+      </span>
+    <% end %>
+  </div>
+  <div class="column col-md-12 col-5 sort-column text-right">
+    sort by 
+
+    <div class="btn-group">
+      <%= link_to_unless params[:sort] == "name" || params[:sort].blank?, "name", inventory_path, class: "btn btn-sm" do %>
+        <button class="btn btn-sm active">name</button>
+      <% end %>
+      <%= link_to_unless params[:sort] == "number", "number", inventory_path(sort: "number"), class: "btn btn-sm" do %>
+        <button class="btn btn-sm active">number</button>
+      <% end %>
+      <%= link_to_unless params[:sort] == "added", "added", inventory_path(sort: "added"), class: "btn btn-sm" do %>
+        <button class="btn btn-sm active">added</button>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column col-sm-9 col-xs-12">
+    <% if @items.any? %>
+      <div class="items-table">
+        <% @items.each do |item| %>
+          <%= tag.div class: "items-table-image" do %>
+            <% if item.image.attached? %>
+              <%= link_to item_path(item) do %>
+                <%= image_tag url_for(rotated_variant(item.image, resize_to_limit: [200, 140])), class: "p-centered" %>
+              <% end %>
+            <% else %>
+              <div class="image-placeholder"></div>
+            <% end %>
+          <% end %>
+
+          <%= tag.div class: "items-table-name" do %>
+            <strong><%= full_item_number(item) %></strong>
+            <%= item_status_label(item) %>
+            <br>
+            <%= link_to item.name, item_path(item) %>
+            <% if item.size.present? %>
+              <span class="label"><%= item.size %></span>
+            <% end %>
+            <% if item.strength.present? %>
+              <span class="label"><%= item.strength %></span>
+            <% end %>
+            <br>
+
+            <%= tag.div [item.brand, item.model].select(&:present?).join(", ") %>
+          <% end %>
+
+          <%= tag.div class: "items-table-tags" do %>
+            <% item.tags.each do |tag| %>
+              <%= link_to tag.name, inventory_path(tag: tag.id, query: nil) %>
+            <% end %>
+          <% end %>
+          <div class="item-table-divider"></div>
+        <% end %>
+
+      </div>
+
+      <%== pagy_bootstrap_nav(@pagy) %>
+
+    <% else %>
+      <%= empty_state "There are no matching items" %>
+    <% end %>
+  </div>
+
+  <div class="column col-3 hide-xs">
+    <strong>View items tagged with:</strong><br/>
+    <%= tag_nav(Tag.sorted_by_name, @tag) {|tag| inventory_path(tag: tag.id, query: nil)} %>
+  </div>
+
+</div>

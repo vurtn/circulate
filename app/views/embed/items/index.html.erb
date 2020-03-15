@@ -1,0 +1,12 @@
+<%= form_with url: inventory_path, method: "get", local: true do |f| %>
+  <div class="input-group">
+      <%= f.text_field :query,
+        class: "form-input", 
+        placeholder: "find items by name, number, or other details",
+        type: "search",
+        value: @query %>
+    <%= f.button "Search", type: "submit", name: nil, class: "btn btn-primary input-group-btn" %>
+  </div>
+<% end %>
+
+<%= render "items/list" %>

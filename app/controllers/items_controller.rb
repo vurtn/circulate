@@ -2,16 +2,23 @@ class ItemsController < ApplicationController
   include Pagy::Backend
 
   def index
-    item_scope = Item.listed_publicly.includes(:checked_out_exclusive_loan)
-
-    if params[:tag]
+    scope = if params[:query]
+      @query = params[:query]
+      Item.search_by_anything(@query)
+    elsif params[:tag]
       @tag = Tag.where(id: params[:tag]).first
       redirect_to(items_path, error: "Tag not found") && return unless @tag
 
-      item_scope = @tag.items
+      @tag.items
+    else
+      Item
     end
 
-    item_scope = item_scope.includes(:tags, :borrow_policy).with_attached_image.order(index_order)
+    item_scope = scope
+      .listed_publicly
+      .includes(:tags, :borrow_policy, :checked_out_exclusive_loan)
+      .with_attached_image
+      .reorder(index_order)
 
     @pagy, @items = pagy(item_scope)
   end
@@ -29,5 +36,14 @@ class ItemsController < ApplicationController
       "added" => "items.created_at DESC"
     }
     options.fetch(params[:sort]) { options["name"] }
+  end
+
+  helper_method def inventory_path(parameters = {})
+    final_params = filter_params.merge(parameters).to_h.compact
+    url_for(final_params)
+  end
+
+  helper_method def filter_params
+    params.permit(:tag, :query)
   end
 end

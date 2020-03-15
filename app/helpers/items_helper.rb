@@ -28,8 +28,9 @@ module ItemsHelper
 
     tag.div class: "nav tag-nav" do
       tags.map { |a_tag|
+        link = block_given? ? yield(a_tag) : url_for(tag: a_tag.id)
         tag.li(class: "nav-item #{"active" if a_tag == current_tag}") {
-          link_to(a_tag.name, tag: a_tag.id)
+          link_to(a_tag.name, link)
         }
       }.join.html_safe
     end

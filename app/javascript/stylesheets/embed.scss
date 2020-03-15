@@ -1,0 +1,18 @@
+@import 'globals';
+
+#__circulate_inventory__ {
+  @import 'spectre.css/src/spectre';
+  @include items-table;
+  @import 'overrides';
+  // @import 'spectre.css/src/_variables';
+  // @import 'spectre.css/src/mixins/_label';
+  // @import 'spectre.css/src/mixins/_button';
+  // @import 'spectre.css/src/mixins/_shadow';
+  // @import 'spectre.css/src/_chips';
+  // @import 'spectre.css/src/_buttons';
+  // @import 'spectre.css/src/_forms';
+  // @import 'spectre.css/src/_labels';
+  // @import 'spectre.css/src/_layout';
+  // @import 'spectre.css/src/_navs';
+  // @import 'spectre.css/src/_pagination';
+}

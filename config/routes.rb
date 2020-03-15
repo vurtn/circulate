@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     resources :notifications, only: :index
     resources :potential_volunteers, only: :index
 
+
     post "search", to: "searches#create"
     get "search", to: "searches#show"
 
@@ -72,6 +73,12 @@ Rails.application.routes.draw do
     end
 
     get "/", to: redirect("/admin/items")
+  end
+
+  namespace :embed do
+    resources :items, only: :index
+    get "js", to: "assets#js"
+    get "css", to: "assets#css"
   end
 
   get "/s/:id", to: "short_links#show", as: :short_link

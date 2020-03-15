@@ -1,92 +1,24 @@
-<div class="columns">
-  <div class="column col-12">
 
-    <h1>
-      <%= link_to "Items", items_path %>
-    </h1>
 
-    <div class="items-summary">
-      Viewing
-      <% if @tag %>
-        <strong><%= pluralize @pagy.count, "item" %></strong> tagged with
-        <span class="chip">
-          <%= @tag.name %>
-          <%= link_to "", items_path, :class => "btn btn-clear", "aria-label" => "Clear filter", :role => "button", title: "Clear filter" %>
-        </span>,
-      <% else %>
-        all <strong><%= pluralize @pagy.count, "item" %></strong>,
+<div class="app">
+  <div class="columns mb-2">
+    <div class="column col-xs-12 col-6">
+      <h1>
+        <%= link_to "Items", items_path %>
+      </h1>
+    </div>
+    <div class="column col-xs-12 col-6">
+      <%= form_with url: items_url, method: "get", local: true, class: "mt-2" do |f| %>
+        <div class="input-group">
+            <%= f.text_field :query,
+              class: "form-input", 
+              placeholder: "find items by name, number, or other details",
+              type: "search",
+              value: @query %>
+          <%= f.button "Search", type: "submit", name: nil, class: "btn btn-primary input-group-btn" %>
+        </div>
       <% end %>
-
-      sorted by: 
-
-      <div class="btn-group">
-        <%= link_to_unless params[:sort] == "name" || params[:sort].blank?, "name", {tag: params[:tag]}, class: "btn btn-sm" do %>
-          <button class="btn btn-sm active">name</button>
-        <% end %>
-        <%= link_to_unless_current "number", {sort: "number", tag: params[:tag]}, class: "btn btn-sm" do %>
-          <button class="btn btn-sm active">number</button>
-        <% end %>
-        <%= link_to_unless_current "added", {sort: "added", tag: params[:tag]}, class: "btn btn-sm" do %>
-          <button class="btn btn-sm active">added</button>
-        <% end %>
-      </div>
-
-    </div> 
-
+    </div>
   </div>
-</div>
-
-<div class="columns">
-  <div class="column col-9-sm col-12-xs">
-    <% if @items.any? %>
-      <div class="items-table">
-        <% @items.each do |item| %>
-          <%= tag.div class: "items-table-image" do %>
-            <% if item.image.attached? %>
-              <%= link_to item_path(item) do %>
-                <%= image_tag url_for(rotated_variant(item.image, resize_to_limit: [200, 140])), class: "p-centered" %>
-              <% end %>
-            <% else %>
-              <div class="image-placeholder"></div>
-            <% end %>
-          <% end %>
-
-          <%= tag.div class: "items-table-name" do %>
-            <strong><%= full_item_number(item) %></strong>
-            <%= item_status_label(item) %>
-            <br>
-            <%= link_to item.name, item_path(item) %>
-            <% if item.size.present? %>
-              <span class="label"><%= item.size %></span>
-            <% end %>
-            <% if item.strength.present? %>
-              <span class="label"><%= item.strength %></span>
-            <% end %>
-            <br>
-
-            <%= tag.div [item.brand, item.model].select(&:present?).join(", ") %>
-          <% end %>
-
-          <%= tag.div class: "items-table-tags" do %>
-            <% item.tags.each do |tag| %>
-              <%= link_to tag.name, {tag: tag.id} %><br>
-            <% end %>
-          <% end %>
-          <div class="item-table-divider"></div>
-        <% end %>
-
-      </div>
-
-      <%== pagy_bootstrap_nav(@pagy) %>
-
-    <% else %>
-      <%= empty_state "There are no matching items" %>
-    <% end %>
-  </div>
-
-  <div class="column col-3 hide-xs">
-    <strong>View items tagged with:</strong><br/>
-    <%= tag_nav(Tag.sorted_by_name, @tag) %>
-  </div>
-
+  <%= render "list" %>
 </div>
