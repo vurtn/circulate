@@ -1,5 +1,9 @@
 require "test_helper"
 
+require "helpers/items_system_test_methods"
+
+Capybara.server_port = 65432
+
 # Backported from Rails 6.1
 Capybara.add_selector :rich_text_area do
   label "rich-text area"

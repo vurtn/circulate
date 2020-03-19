@@ -1,10 +1,8 @@
 const WRAPPER_ID = "__circulate_inventory__";
 const page = document.getElementById(WRAPPER_ID);
 
-let URL = "https://app.chicagotoollibrary.org";
-if (process.env.NODE_ENV !== "production") {
-  URL = "http://localhost:3000/embed/items";
-}
+const HOST = process.env.EMBED_SERVER_HOST;
+const URL = HOST + "/embed/items";
 
 function includeStylesheet(doc) {
   let linkTag = doc.createElement("link");
@@ -55,6 +53,9 @@ page.addEventListener("click", function(event) {
     let a = event.target;
     let params = new URLSearchParams(a.hash.replace("#", ""));
     let data = Object.fromEntries(params);
+    console.debug(a);
+    console.debug(params);
+    console.debug(data);
     if (Object.keys(data).length === 0) {
       window.history.pushState(data, "", document.location.pathname);
     } else {
@@ -70,6 +71,3 @@ window.addEventListener("popstate", function(event) {
 
 // includeStylesheet(document);
 sync();
-// fetch(URL).then(response => response.text()).then(data => {
-//   page.innerHTML = data;
-// });

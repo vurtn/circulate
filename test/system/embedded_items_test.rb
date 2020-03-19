@@ -1,9 +1,9 @@
 require "application_system_test_case"
 
-class PublicItemsTest < ApplicationSystemTestCase
+class EmbeddedItemsTest < ApplicationSystemTestCase
   include ItemsSystemTestMethods
 
   private def visit_items_index
-    visit items_url    
+    visit "/embed_test.html"
   end
 end
