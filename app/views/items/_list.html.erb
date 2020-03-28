@@ -41,7 +41,7 @@
         <% @items.each do |item| %>
           <%= tag.div class: "items-table-image" do %>
             <% if item.image.attached? %>
-              <%= link_to item_path(item) do %>
+              <%= link_to inventory_item_path(item) do %>
                 <%= image_tag url_for(rotated_variant(item.image, resize_to_limit: [200, 140])), class: "p-centered" %>
               <% end %>
             <% else %>
@@ -53,7 +53,7 @@
             <strong><%= full_item_number(item) %></strong>
             <%= item_status_label(item) %>
             <br>
-            <%= link_to item.name, item_path(item) %>
+            <%= link_to item.name, inventory_item_path(item) %>
             <% if item.size.present? %>
               <span class="label"><%= item.size %></span>
             <% end %>

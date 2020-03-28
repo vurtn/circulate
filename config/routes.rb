@@ -76,7 +76,7 @@ Rails.application.routes.draw do
   end
 
   namespace :embed do
-    resources :items, only: :index
+    resources :items, only: [:index, :show]
     get "js", to: "assets#js"
     get "css", to: "assets#css"
   end

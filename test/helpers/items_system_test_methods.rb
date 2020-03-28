@@ -1,8 +1,6 @@
 module ItemsSystemTestMethods
-
   def self.included(base)
     base.class_eval do
-
       setup do
         Item.delete_all
         borrow_policy = create(:borrow_policy)
@@ -19,8 +17,9 @@ module ItemsSystemTestMethods
         items.first.tap { |i| i.tags << tag }
       end
 
-      test "viewing an item" do
+      test "viewing an item from index" do
         visit_items_index
+        assert_content "Viewing 3 items"
 
         within ".items-table .items-table-name", text: "Item #1" do
           click_on "Item #1"
@@ -28,6 +27,18 @@ module ItemsSystemTestMethods
 
         assert_selector "h1", text: "Item #1"
         assert_content "The description for item #1"
+      end
+
+      test "viewing an item directly" do
+        item = Item.first
+
+        visit_item_page(item)
+
+        assert_selector "h1", text: item.name
+        assert_content item.description.body.to_html
+
+        find("a.history-back").click
+        assert_content "Viewing 3 items"
       end
 
       test "sorting items" do
@@ -58,7 +69,6 @@ module ItemsSystemTestMethods
         assert_item_names "Item #1", "Item #2", "Item #3"
       end
 
-
       test "filter by tag" do
         visit_items_index
 
@@ -79,10 +89,13 @@ module ItemsSystemTestMethods
         assert_equal expected_names, names
       end
     end
-
   end
 
   def visit_items_index
+    raise "unimplemented!"
+  end
+
+  def visit_item_page(item)
     raise "unimplemented!"
   end
 end

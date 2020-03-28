@@ -38,6 +38,10 @@ class ItemsController < ApplicationController
     options.fetch(params[:sort]) { options["name"] }
   end
 
+  helper_method def inventory_item_path(item)
+    item_path(item)
+  end
+
   helper_method def inventory_path(parameters = {})
     final_params = filter_params.merge(parameters).to_h.compact
     url_for(final_params)
