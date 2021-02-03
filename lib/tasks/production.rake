@@ -2,16 +2,8 @@ desc "Load production data and modify for local usage"
 task load_production_data: [:pull_production_database, :environment] do
   raise "no way buddy" if Rails.env.production?
 
-  ActiveStorage::Attachment.delete_all
-  ActiveStorage::Blob.delete_all
-  User.all.each do |user|
-    user.update!(
-      password: "password",
-      email: "user#{user.id}@domain.test",
-      current_sign_in_ip: "1.1.1.1",
-      last_sign_in_ip: "1.1.1.1"
-    )
-  end
+  scrub_data
+  delete_attachments
 end
 
 def delete_attachments
@@ -65,7 +57,7 @@ task update_staging_database: [:pull_production_database, :environment] do
 end
 
 desc "Update analysis database with latest scrubbed data"
-task update_analysis_database: [:pull_production_database, :environment] do
+task update_analysis_database: [:load_production_database, :environment] do
   raise "no way buddy" if Rails.env.production?
 
   scrub_data
@@ -79,4 +71,5 @@ desc "Pulls production database into local develeopment database"
 task pull_production_database: :environment do
   puts `rails db:drop`
   puts `heroku pg:pull DATABASE circulate_development --app chicagotoollibrary`
+  puts `rails db:environment:set RAILS_ENV=development`
 end
