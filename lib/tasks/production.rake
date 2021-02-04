@@ -57,7 +57,7 @@ task update_staging_database: [:pull_production_database, :environment] do
 end
 
 desc "Update analysis database with latest scrubbed data"
-task update_analysis_database: [:load_production_database, :environment] do
+task update_analysis_database: [:load_production_data, :environment] do
   raise "no way buddy" if Rails.env.production?
 
   scrub_data
