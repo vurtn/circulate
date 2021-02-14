@@ -1,12 +1,26 @@
 body.admin {
+  .off-canvas {
+    height: auto;
+  }
 
-    .off-canvas {
-        height: auto;
+  table .table-stripe {
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .admin-dashboard {
+    dl {
     }
-
-
-table .table-stripe {
-    background: rgba(255,255,255,.7);
-}
-
+    .pair {
+      width: 19%;
+      display: inline-block;
+    }
+    dt {
+    }
+    dd {
+      font-size: 4rem;
+      line-height: 1;
+      font-weight: 300;
+      margin-top: 0;
+    }
+  }
 }
