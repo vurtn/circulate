@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_04_025839) do
+ActiveRecord::Schema.define(version: 2021_02_20_192310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -94,7 +94,14 @@ ActiveRecord::Schema.define(version: 2021_02_04_025839) do
     t.bigint "byte_size", null: false
     t.string "checksum", null: false
     t.datetime "created_at", null: false
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "adjustments", force: :cascade do |t|
@@ -362,6 +369,18 @@ ActiveRecord::Schema.define(version: 2021_02_04_025839) do
     t.index ["uuid"], name: "index_notifications_on_uuid"
   end
 
+  create_table "pending_notifications", force: :cascade do |t|
+    t.bigint "member_id", null: false
+    t.text "kind", null: false
+    t.integer "loan_ids", default: [], null: false, array: true
+    t.integer "hold_ids", default: [], null: false, array: true
+    t.integer "renewal_request_ids", default: [], null: false, array: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["member_id", "kind"], name: "index_pending_notifications_on_member_id_and_kind", unique: true
+    t.index ["member_id"], name: "index_pending_notifications_on_member_id"
+  end
+
   create_table "renewal_requests", force: :cascade do |t|
     t.enum "status", default: "requested", null: false, enum_name: "renewal_request_status"
     t.bigint "loan_id"
@@ -403,6 +422,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_025839) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "adjustments", "members"
   add_foreign_key "agreement_acceptances", "members"
   add_foreign_key "categories", "categories", column: "parent_id"
@@ -421,6 +441,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_025839) do
   add_foreign_key "memberships", "members"
   add_foreign_key "notes", "users", column: "creator_id"
   add_foreign_key "notifications", "members"
+  add_foreign_key "pending_notifications", "members"
   add_foreign_key "renewal_requests", "loans"
   add_foreign_key "users", "members"
 
