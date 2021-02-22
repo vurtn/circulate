@@ -2,13 +2,13 @@
 # This allows us to send aggregate emails and not spam members when
 # many similar events happen over a short period of time.
 #
-# A good example of this is a person who is checking in or our tools.
+# A good example of this is a person who is checking in or out tools.
 # Each check in or out updates a Loan record, one at a time as the librarian
 # updates the computer. Additionally, it's possible that the librarian might
 # need to undo one of these actions, and we want the email notifications we send
 # to be as accurate as possible to avoid confusion.
 #
-# Notifications are currently bucketed for 5 minutes, after which time a
+# Notifications are bucketed for DELAY minutes, after which time a
 # process that runs regularly will detect and send the actual notification. The
 # PendingNotification will then be deleted from the database.
 class PendingNotification < ApplicationRecord
@@ -40,7 +40,7 @@ class PendingNotification < ApplicationRecord
   # and result in a single notification being sent.
   def self.track(kind, member_id:, tracked_id:)
     unless TRACKED_NOTIFICATIONS.key?(kind)
-      raise ArgumentError.new("is not a recognized notification type")
+      raise ArgumentError.new("#{kind} is not a recognized notification type")
     end
 
     query = query_for_upsert(
@@ -67,7 +67,7 @@ class PendingNotification < ApplicationRecord
       column: TRACKED_NOTIFICATIONS[kind],
       id: tracked_id
     )
-    connection.update(query, "UPSERT PENDING NOTIFICATION")
+    connection.update(query, "REMOVE PENDING NOTIFICATION")
     where(member_id: member_id, kind: kind).first
   end
 
