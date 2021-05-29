@@ -22,6 +22,15 @@ body.admin {
     }
   }
 
+  .item-holds-table {
+    tr.sorting {
+      background: white;
+    }
+    tr.ghost {
+      background: $secondary-color-light;
+    }
+  }
+
  .app-header {
     background: $primary-color;
     color: white;

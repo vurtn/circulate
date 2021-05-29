@@ -76,6 +76,8 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    acts_as_list (1.0.4)
+      activerecord (>= 4.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     appsignal (3.0.2)
@@ -408,6 +410,7 @@ PLATFORMS
 DEPENDENCIES
   active_storage_log_suppressor!
   activerecord-postgres_enum
+  acts_as_list
   appsignal
   audited!
   aws-sdk-s3

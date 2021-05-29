@@ -9,6 +9,8 @@ class Hold < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :loan, required: false
 
+  acts_as_list scope: :item
+
   scope :active, ->(now = Time.current) { where("ended_at IS NULL AND (started_at IS NULL OR started_at >= ?)", now.beginning_of_day - HOLD_LENGTH) }
   scope :inactive, ->(now = Time.current) { ended.or(expired(now)) }
   scope :ended, -> { where("ended_at IS NOT NULL") }
