@@ -1,15 +1,17 @@
 <%= render "admin/items/profile" do %>
   <table class="table item-holds-table">
     <thead>
+      <th></th>
       <th>#</th>
       <th>Member</th>
       <th>Reserved</th>
       <th>Wait time</th>
-      <th>Position</th>
+      <th class="text-center">Notified?</th>
     </thead>
     <tbody data-controller="hold-order" data-hold-order-url="<%= admin_item_holds_path(@item) %>/:id/position">
       <% @holds.each_with_index do |hold, index| %>
-        <tr data-position="<%= hold.position %>" data-id="<%= hold.id %>">
+        <tr data-initial-index="<%= index %>" data-position="<%= hold.position %>" data-id="<%= hold.id %>" class="<%= "notified" if hold.started? %>">
+          <td class="drag-handle text-center" title="drag to reorder holds"><%= feather_icon("code") unless hold.started? %></td>
           <td><%= index + 1 %></td>
           <td>
             <%= link_to preferred_or_default_name(hold.member),
@@ -17,7 +19,7 @@
           </td>
           <td><%= date_with_time_title hold.created_at %></td>
           <td><%= time_ago_in_words(hold.created_at) %></td>
-          <td><%= hold.position %></td>
+          <td class="text-center"><%= hold.started? ? "✔️" : "" %></td>
         </tr>
       <% end %>
     </tbody>

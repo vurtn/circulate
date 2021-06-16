@@ -6,22 +6,26 @@ export default class extends Controller {
   connect() {
     this.sortable = Sortable.create(this.element, {
       animation: 150,
+      handle: ".drag-handle",
+      filter: ".notified",
       onEnd: this.end.bind(this),
-      onMove: this.move.bind(this),
+      onMove: (event) => {
+        if (event.related.classList.contains('notified')) return false;
+    },
       chosenClass: "sorting",
       ghostClass: "ghost",
     })
   }
 
-  move(event) {
-    this.moved = event.related;
-  }
-
   end(event) {
-    let id = event.item.dataset.id
-    let data = new FormData()
-    data.append("position", this.moved.dataset.position)
+    console.debug(event);
+    const id = event.item.dataset.id
+    const index = event.newIndex;
+    const previousItem = this.element.querySelector(`*[data-initial-index="${index}"]`);
+    const position = previousItem.dataset.position;
 
+    let data = new FormData()
+    data.append("position", position)
     Rails.ajax({
       url: this.data.get("url").replace(":id", id),
       type: 'PUT',

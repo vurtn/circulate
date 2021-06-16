@@ -80,7 +80,7 @@ class Hold < ApplicationRecord
   end
 
   def previous_active_holds(now = Time.current)
-    Hold.active(now).where("created_at < ?", created_at).where(item: item).where.not(member: member).order(:ended_at).to_a
+    Hold.active(now).where("position < ?", position).where(item: item).where.not(member: member).order(:position).to_a
   end
 
   def ready_for_pickup?(now = Time.current)
