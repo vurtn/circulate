@@ -257,7 +257,7 @@ ActiveRecord::Schema.define(version: 2021_05_28_225001) do
     t.datetime "started_at"
     t.integer "position", null: false
     t.index ["creator_id"], name: "index_holds_on_creator_id"
-    t.index ["item_id", "position"], name: "index_holds_on_item_id_and_position"
+    t.index ["item_id", "position"], name: "index_holds_on_item_id_and_position", unique: true
     t.index ["item_id"], name: "index_holds_on_item_id"
     t.index ["loan_id"], name: "index_holds_on_loan_id"
     t.index ["member_id"], name: "index_holds_on_member_id"

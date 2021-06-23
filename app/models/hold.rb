@@ -123,3 +123,35 @@ class Hold < ApplicationRecord
     started
   end
 end
+
+# a=1 b=2 c=3
+# c -> a
+#
+#
+#
+
+def position_scope
+  where(item_id: item_id)
+end
+
+before_save :set_initial_position
+
+def set_initial_position
+  self.position = position.scope.maximum(:position) + 1
+end
+
+before_update :prepare_for_position_update
+
+def prepare_for_position_update
+  return unless position_changed?
+
+  current_position, new_position = position_changes
+  change = new_position < current_position ? 1 : -1
+
+  # move out of the way
+  update_attribute(:position, position_scope.maximum(:position) + 1)
+
+  Hold.where("position BETWEEN ? AND ?", new_pos, current_pos).update_all!("position=position+?", change * -1)
+end
+
+update!(new_pos)

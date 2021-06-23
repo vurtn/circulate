@@ -267,3 +267,8 @@ class HoldTest < ActiveSupport::TestCase
     end
   end
 end
+
+class HoldPositionTest < ActiveSupport::TestCase
+  test "sets position to the next value in the list" do
+  end
+end
