@@ -10,23 +10,41 @@ module Admin
     end
 
     test "should renew all renewable loans" do
-      @member = create(:verified_member)
-      @loans = create_list(:loan, 5, member: @member)
+      # renew one item
+      renewable_item = create(:item)
 
-      # NOTE(chaserx): ensure that at least on of the items on loan is not renewable.
-      @loans[2].item.borrow_policy.update(renewal_limit: 0)
+      # don't renew an item with a hold
+      held_item = create(:item)
+      create(:hold, item: held_item)
 
-      assert_difference("Loan.count", 4) do
-        put admin_bulk_renewal_url(@member)
+      # an item a member could have renewed themselves
+      member_renewable_policy = create(:member_renewable_borrow_policy)
+      member_renewable_item = create(:item, borrow_policy: member_renewable_policy)
+
+      # don't renew an item that can't be renewed
+      unrenewable_policy = create(:borrow_policy, renewal_limit: 0)
+      unrenewable_item = create(:item, borrow_policy: unrenewable_policy)
+
+      member = create(:verified_member)
+      renewable_loan = create(:loan, item: renewable_item, member: member)
+      held_loan = create(:loan, item: held_item, member: member)
+      member_renewable_loan = create(:loan, item: member_renewable_item, member: member)
+      unrenewable_loan = create(:loan, item: unrenewable_item, member: member)
+
+      assert_difference("Loan.count", 2) do
+        put admin_bulk_renewal_url(member)
       end
 
-      assert_redirected_to admin_member_url(@member)
+      assert_redirected_to admin_member_url(member)
 
-      @first_renewal = @loans.first.renewals.first
-      assert_equal 1, @first_renewal.renewal_count
+      assert renewable_loan.reload.ended?
+      assert_equal 1, renewable_loan.renewals.count
 
-      @last_renewal = @loans.last.renewals.first
-      assert_equal 1, @last_renewal.renewal_count
+      assert member_renewable_loan.reload.ended?
+      assert_equal 1, member_renewable_loan.renewals.count
+
+      assert_equal 0, held_loan.renewals.count
+      assert_equal 0, unrenewable_loan.renewals.count
     end
   end
 end

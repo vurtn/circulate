@@ -45,6 +45,8 @@
                   <span class="message">You can renew this loan without librarian approval if you need it for more time.</span> <%= button_to 'Renew Loan', account_renewals_path(loan_id: loan), method: :post, class: "btn" %>
                 <% elsif loan.member_renewal_requestable? %>
                   <span class="message">If you need more time, you can request a renewal but we may not be able to grant it due to demand.</span> <%= button_to 'Request Loan Renewal', account_renewal_requests_path(loan_id: loan), method: :post, class: "btn" %>
+                <% elsif loan.renewal_blocked_by_holds? %>
+                  <span class="message">Sorry, this item isn't eligible for renewal at the moment because it's on hold by another member.</span>
                 <% end %>
               </div>
             </li>

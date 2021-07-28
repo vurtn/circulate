@@ -161,12 +161,12 @@ class LoanTest < ActiveSupport::TestCase
     refute loan.member_renewable?
   end
 
-  test "is not member_renewable if not within original loan duration" do
+  test "is not within_borrow_policy_duration if not within original loan duration" do
     borrow_policy = create(:member_renewable_borrow_policy)
     item = create(:item, borrow_policy: borrow_policy)
     loan = create(:loan, item: item, due_at: (borrow_policy.duration + 1).days.from_now)
 
-    refute loan.member_renewable?
+    refute loan.within_borrow_policy_duration?
   end
 
   test "is not member_renewable if loan has end date" do

@@ -81,20 +81,28 @@ class Loan < ApplicationRecord
     Loan.new(member: to, item: item, due_at: due_at, uniquely_numbered: item&.borrow_policy&.uniquely_numbered)
   end
 
+  def staff_renewable?
+    member_renewable? || member_renewal_requestable?
+  end
+
   # Will another renewal exceed the maximum number of renewals?
-  # TODO rename this within_renewal_limit?
-  def renewable?
+  def within_renewal_limit?
     renewal_count < item.borrow_policy.renewal_limit
   end
 
   # Can a member renew this loan themselves without approval?
   def member_renewable?
-    renewable? && within_borrow_policy_duration? && item.borrow_policy.member_renewable? && ended_at.nil?
+    within_renewal_limit? && ended_at.nil? && item.borrow_policy.member_renewable?
   end
 
   # Can a member request this loan be renewed?
   def member_renewal_requestable?
-    renewable? && within_borrow_policy_duration? && ended_at.nil? && !item.active_holds.any? && !renewal_requests.any?
+    within_renewal_limit? && ended_at.nil? && !renewal_blocked_by_holds? && !renewal_requests.any?
+  end
+
+  # B and C tools can't be renewed if someone has them on hold
+  def renewal_blocked_by_holds?
+    item.active_holds.any? && !item.borrow_policy.member_renewable?
   end
 
   # Is it after the loan was created? This method is basically a no-op and can likely be removed.
