@@ -11,8 +11,14 @@
     <% end %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= stylesheet_pack_tag 'styles', media: 'all', 'data-turbolinks-track': 'reload' %>
+
     <% if Rails.env.production? %>
-      <script async defer data-domain="app.chicagotoollibrary.org" src="https://plausible.io/js/plausible.js"></script>
+      <script type="text/javascript" src="https://cdn.weglot.com/weglot.min.js"></script>
+      <script>
+          Weglot.initialize({
+              api_key: '<%= ENV.fetch("WEGLOT_API_KEY", "weglot key") %>'
+          });
+      </script>
     <% end %>
   </head>
 
@@ -85,13 +91,14 @@
         <%= flash_message :success  %>
         <%= flash_message :warning  %>
         <%= flash_message :error  %>
+        <%= flash_message :alert, "error"  %>
 
         <%= render(partial: "account/membership_renewal_message") if user_signed_in? %>
 
         <%= yield %>
       </div>
     </div>
+
+    <%= render partial: 'layouts/footer', object: @member, as: :member %>
   <% end %>
-  
-  <%= render partial: 'layouts/footer', object: @member, as: :member %>
 </html>

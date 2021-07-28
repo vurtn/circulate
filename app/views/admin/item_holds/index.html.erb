@@ -7,6 +7,7 @@
       <th>Reserved</th>
       <th>Wait time</th>
       <th class="text-center">Notified?</th>
+      <th>Expires on</th>
     </thead>
     <tbody data-controller="hold-order" data-hold-order-url="<%= admin_item_holds_path(@item) %>/:id/position">
       <% @holds.each_with_index do |hold, index| %>
@@ -20,6 +21,7 @@
           <td><%= date_with_time_title hold.created_at %></td>
           <td><%= time_ago_in_words(hold.created_at) %></td>
           <td class="text-center"><%= hold.started? ? "✔️" : "" %><%= hold.position %></td>
+          <td><%= date_with_time_title(hold.expires_at) if hold.expires_at %></td>
         </tr>
       <% end %>
     </tbody>
