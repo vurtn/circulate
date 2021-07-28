@@ -9,7 +9,9 @@ class Hold < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :loan, required: false
 
-  acts_as_list scope: :item
+  # sequential_updates moves items one at a time to deal with having a uniqueness constraint on [item_id, position]
+  # if/when that becomes a performance issue, we can consider making the constraint deferred
+  acts_as_list scope: :item, sequential_updates: true
 
   scope :active, ->(now = Time.current) { where("ended_at IS NULL AND (started_at IS NULL OR started_at >= ?)", now.beginning_of_day - HOLD_LENGTH) }
   scope :inactive, ->(now = Time.current) { ended.or(expired(now)) }
@@ -123,35 +125,3 @@ class Hold < ApplicationRecord
     started
   end
 end
-
-# a=1 b=2 c=3
-# c -> a
-#
-#
-#
-
-def position_scope
-  where(item_id: item_id)
-end
-
-before_save :set_initial_position
-
-def set_initial_position
-  self.position = position.scope.maximum(:position) + 1
-end
-
-before_update :prepare_for_position_update
-
-def prepare_for_position_update
-  return unless position_changed?
-
-  current_position, new_position = position_changes
-  change = new_position < current_position ? 1 : -1
-
-  # move out of the way
-  update_attribute(:position, position_scope.maximum(:position) + 1)
-
-  Hold.where("position BETWEEN ? AND ?", new_pos, current_pos).update_all!("position=position+?", change * -1)
-end
-
-update!(new_pos)
